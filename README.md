@@ -40,9 +40,7 @@ A user-friendly interface is provided through a `while True` loop, allowing user
     python app.py
     ```
 
-## Fun Fact 🎉
-
-Did you know? This app not only detects cancer but also brings a smile to your face! 🌟
+## Contributing 🎉
 
 Feel free to contribute, report issues, or just explore the world of cancer detection with joy! 😄
 
