@@ -25,7 +25,7 @@ A user-friendly interface is provided through a `while True` loop, allowing user
 1. Clone the repository:
 
     ```bash
-    git clone https://github.com/your-username/Cancer-Detection-App.git
+    git@github.com:VukIG/Cancer-Detection-AI.git
     ```
 
 2. Install dependencies:
@@ -37,7 +37,7 @@ A user-friendly interface is provided through a `while True` loop, allowing user
 3. Run the app:
 
     ```bash
-    python app.py
+    python interface.py
     ```
 
 ## Contributing 🎉
