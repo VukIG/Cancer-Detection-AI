@@ -8,6 +8,9 @@ from model import test_size
 # Load the pre-trained model
 loaded_model = tf.keras.models.load_model('/home/vuk/Documents/ML/Cancer-Detection-AI/Cancer-detection-model')
 
+# Set the threshold
+threshold = 0.3  # You can adjust this threshold value
+
 # Evaluate the model on the test dataset
 evaluation_results = loaded_model.evaluate(test_dataset, steps=test_size // batch_size, verbose=0)
 
@@ -16,7 +19,8 @@ accuracy = evaluation_results[1]
 
 # Extract true labels and predicted labels
 true_labels = test_dataset.labels
-predicted_labels = loaded_model.predict(test_dataset).argmax(axis=1)
+predicted_probabilities = loaded_model.predict(test_dataset)
+predicted_labels = (predicted_probabilities > threshold).astype(int)
 
 # Calculate precision
 precision = precision_score(true_labels, predicted_labels, average='weighted')  # or 'binary' if appropriate
@@ -38,7 +42,6 @@ def get_image(dataset, index):
 
     return image, label
 
-
 while True:
     index = int(input("Izaberi broj slike za testiranje (0 - 9999): "))
     if index < 0 or index > 9999:
@@ -50,11 +53,12 @@ while True:
 
     # Use the loaded model for predictions
     predictions = loaded_model.predict(img_input)
-    predicted_label = np.argmax(predictions)
-    if(predicted_label == 1):
+    predicted_label = (predictions > threshold).astype(int)
+    if predicted_label == 1:
         predicted_label = 'kancerogeni mladez'
     else:
         predicted_label = 'dobrocudni tumor'        
+
     plt.imshow(img, cmap=plt.cm.binary)
     plt.title(f"Model predvidja da ova slika sadrzi: {predicted_label}, ova slika sadrzi: {label}")
     plt.show()

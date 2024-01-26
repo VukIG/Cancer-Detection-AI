@@ -1,6 +1,6 @@
 import tensorflow as tf
 import os
-from pre_processing import train_dataset, validation_dataset, img_width, img_height, batch_size
+from pre_processing import train_dataset, validation_dataset, img_width, img_height, batch_size, test_dataset
 from sklearn.metrics import confusion_matrix,roc_curve, auc
 from sklearn.utils import class_weight
 import seaborn as sns
@@ -29,7 +29,7 @@ else:
         
         tf.keras.layers.Flatten(),
         
-        tf.keras.layers.Dense(units=512, activation='relu'),
+        tf.keras.layers.Dense(units=256, activation='relu'),
         tf.keras.layers.Dense(units=1, activation='sigmoid') 
     ])
 
@@ -42,26 +42,21 @@ else:
     ]
 
     model.compile(
-        optimizer=tf.keras.optimizers.Adam(learning_rate=1e-3),
+        optimizer=tf.keras.optimizers.Adam(learning_rate=0.001),
         loss=tf.keras.losses.BinaryCrossentropy(),
         metrics=METRICS
     )
-    y_train = train_dataset.classes
+    y_train = train_dataset.labels
 
-    # Compute class weights
-    class_weights = class_weight.compute_class_weight(class_weight ='balanced', classes = np.unique(y_train),y = y_train)
-    class_weights = dict(zip(np.unique(y_train), class_weights))
 
-    # Create a dictionary with class weights
-    class_weight_dict = dict(enumerate(class_weights))
+
     model.fit(
         train_dataset,
-        epochs=1,
+        epochs=10,
         verbose=2,
         steps_per_epoch=train_size // batch_size,
         validation_data=validation_dataset,
         validation_steps=validation_size // batch_size,
-        class_weight=class_weight_dict
     )
 
     model.save("Cancer-detection-model");
@@ -69,31 +64,9 @@ else:
 
 
 loaded_model = tf.keras.models.load_model("Cancer-detection-model")
+validation_results = loaded_model.evaluate(validation_dataset, steps=validation_size // batch_size, verbose=0)
+print("Validation Results:", validation_results)
 
-# Get true labels
-y_true = validation_dataset.classes
-
-# Get predicted probabilities
-y_pred_probs = loaded_model.predict(validation_dataset)
-
-# Convert probabilities to binary predictions
-y_pred = y_pred_probs.argmax(axis=-1)
-
-# Confusion Matrix
-cm = confusion_matrix(y_true, y_pred)
-sns.heatmap(cm, annot=True, fmt="d")
-plt.show()
-
-# ROC Curve and AUC
-fpr, tpr, _ = roc_curve(y_true, y_pred_probs)
-roc_auc = auc(fpr, tpr)
-
-# Plot ROC curve
-plt.plot(fpr, tpr, color='darkorange', lw=2, label='ROC curve (area = {:.2f})'.format(roc_auc))
-plt.show()
-
-y_pred_probs = loaded_model.predict(validation_dataset)
-
-# Adjust the threshold
-threshold = 0.5  # You can experiment with different values
-y_pred = (y_pred_probs > threshold).astype(int)
+# Evaluate on the test set
+test_results = loaded_model.evaluate(test_dataset, steps=test_size // batch_size, verbose=0)
+print("Test Results:", test_results)

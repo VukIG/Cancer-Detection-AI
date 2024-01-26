@@ -2,7 +2,7 @@ import tensorflow as tf
 import numpy as np
 import pandas as pd
 from dir_manipulation import test_data, train_data, validate_data
-import scipy
+import matplotlib.pyplot as plt;
 
 #constants
 img_width = img_height = 224
