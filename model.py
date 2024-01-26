@@ -1,7 +1,11 @@
 import tensorflow as tf
 import os
-from pre_processing import test_dataset, train_dataset, validation_dataset, img_width, img_height, batch_size
-
+from pre_processing import train_dataset, validation_dataset, img_width, img_height, batch_size
+from sklearn.metrics import confusion_matrix,roc_curve, auc
+from sklearn.utils import class_weight
+import seaborn as sns
+import matplotlib.pyplot as plt
+import numpy as np
 validation_size=988
 train_size=7993
 test_size=1034
@@ -42,7 +46,14 @@ else:
         loss=tf.keras.losses.BinaryCrossentropy(),
         metrics=METRICS
     )
+    y_train = train_dataset.classes
 
+    # Compute class weights
+    class_weights = class_weight.compute_class_weight(class_weight ='balanced', classes = np.unique(y_train),y = y_train)
+    class_weights = dict(zip(np.unique(y_train), class_weights))
+
+    # Create a dictionary with class weights
+    class_weight_dict = dict(enumerate(class_weights))
     model.fit(
         train_dataset,
         epochs=1,
@@ -50,7 +61,39 @@ else:
         steps_per_epoch=train_size // batch_size,
         validation_data=validation_dataset,
         validation_steps=validation_size // batch_size,
+        class_weight=class_weight_dict
     )
 
     model.save("Cancer-detection-model");
-    loaded_model = tf.keras.models.load_model("Cancer-detection-model")
+    model.summary()
+
+
+loaded_model = tf.keras.models.load_model("Cancer-detection-model")
+
+# Get true labels
+y_true = validation_dataset.classes
+
+# Get predicted probabilities
+y_pred_probs = loaded_model.predict(validation_dataset)
+
+# Convert probabilities to binary predictions
+y_pred = y_pred_probs.argmax(axis=-1)
+
+# Confusion Matrix
+cm = confusion_matrix(y_true, y_pred)
+sns.heatmap(cm, annot=True, fmt="d")
+plt.show()
+
+# ROC Curve and AUC
+fpr, tpr, _ = roc_curve(y_true, y_pred_probs)
+roc_auc = auc(fpr, tpr)
+
+# Plot ROC curve
+plt.plot(fpr, tpr, color='darkorange', lw=2, label='ROC curve (area = {:.2f})'.format(roc_auc))
+plt.show()
+
+y_pred_probs = loaded_model.predict(validation_dataset)
+
+# Adjust the threshold
+threshold = 0.5  # You can experiment with different values
+y_pred = (y_pred_probs > threshold).astype(int)
