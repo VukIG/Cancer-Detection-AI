@@ -38,7 +38,7 @@ else:
 
 # Create test_data directories
 test_data = os.path.join(directory, 'test/')
-for subfolder in ['benign', 'malignant']:
+for subfolder in ['nv', 'mel','bkl','bcc','akiec']:
     subfolder_path = os.path.join(test_data, subfolder)
     if not os.path.exists(subfolder_path):
         os.makedirs(subfolder_path)
@@ -47,7 +47,7 @@ for subfolder in ['benign', 'malignant']:
 
 # Create train_data directories
 train_data = os.path.join(directory, 'train/')
-for subfolder in ['benign', 'malignant']:
+for subfolder in ['nv', 'mel','bkl','bcc','akiec']:
     subfolder_path = os.path.join(train_data, subfolder)
     if not os.path.exists(subfolder_path):
         os.makedirs(subfolder_path)
@@ -56,7 +56,7 @@ for subfolder in ['benign', 'malignant']:
 
 # Create validate_data directories
 validate_data = os.path.join(directory, 'validate/')
-for subfolder in ['benign', 'malignant']:
+for subfolder in ['nv', 'mel','bkl','bcc','akiec']:
     subfolder_path = os.path.join(validate_data, subfolder)
     if not os.path.exists(subfolder_path):
         os.makedirs(subfolder_path)

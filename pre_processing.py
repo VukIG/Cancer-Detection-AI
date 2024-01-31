@@ -5,7 +5,8 @@ from dir_manipulation import test_data, train_data, validate_data
 import matplotlib.pyplot as plt;
 
 #constants
-img_width = img_height = 224
+img_width = 210
+img_height = 280
 batch_size = 32
 csv_file = '/home/vuk/Documents/ML Data/CDA/hmnist_28_28_L.csv'
 
@@ -31,7 +32,7 @@ train_dataset = train_gen.flow_from_directory(
     target_size=(img_height, img_width),
     batch_size=batch_size,
     color_mode="rgb",
-    class_mode="binary",
+    class_mode="categorical",
     shuffle=True,
     seed=123,
 )
@@ -41,7 +42,7 @@ test_dataset = test_gen.flow_from_directory(
     target_size=(img_height, img_width),
     batch_size=batch_size,
     color_mode="rgb",
-    class_mode="binary",
+    class_mode="categorical",
     shuffle=True,
     seed=123,
 )
@@ -51,7 +52,7 @@ validation_dataset = validation_gen.flow_from_directory(
     target_size=(img_height, img_width),
     batch_size=batch_size,
     color_mode="rgb",
-    class_mode="binary",
+    class_mode="categorical",
     shuffle=True,
     seed=123,
 )

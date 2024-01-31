@@ -31,17 +31,31 @@ else:
         else:
             location = test_data
             test_examples += 1
-
         if(tumor_type == 'mel'):
             shutil.copy(
                 main_folder + img_file + ".jpg",
-                location + "malignant/" + img_file + ".jpg",
+                location + "mel/" + img_file + ".jpg",
             )
+        elif (tumor_type == 'nv'):
+            shutil.copy(
+                main_folder + img_file + ".jpg",
+                location + "nv/" + img_file + ".jpg",
+        )
+        elif (tumor_type == 'bkl'):
+            shutil.copy(
+                main_folder + img_file + ".jpg",
+                location + "bkl/" + img_file + ".jpg",
+        )
+        elif (tumor_type == 'bcc'):
+            shutil.copy(
+                main_folder + img_file + ".jpg",
+                location + "bcc/" + img_file + ".jpg",
+        )
         else:
             shutil.copy(
                 main_folder + img_file + ".jpg",
-                location + "benign/"+ img_file + ".jpg",
-            )
+                location + "akiec/" + img_file + ".jpg",
+        )
 
     print(f"Number of training examples {train_examples}")
     print(f"Number of test examples {test_examples}")

@@ -30,12 +30,12 @@ else:
         tf.keras.layers.Flatten(),
         
         tf.keras.layers.Dense(units=256, activation='relu'),
-        tf.keras.layers.Dense(units=1, activation='sigmoid') 
+        tf.keras.layers.Dense(units=7, activation='softmax') 
     ])
 
 
     METRICS = [
-        tf.keras.metrics.BinaryAccuracy(),
+        tf.keras.metrics.CategoricalAccuracy(),
         tf.keras.metrics.Precision(),
         tf.keras.metrics.Recall(),
         tf.keras.metrics.AUC(),
@@ -43,16 +43,16 @@ else:
 
     model.compile(
         optimizer=tf.keras.optimizers.Adam(learning_rate=0.001),
-        loss=tf.keras.losses.BinaryCrossentropy(),
+        loss=tf.keras.losses.CategoricalCrossentropy(),
         metrics=METRICS
     )
     y_train = train_dataset.labels
-
+    
 
 
     model.fit(
         train_dataset,
-        epochs=10,
+        epochs=9,
         verbose=2,
         steps_per_epoch=train_size // batch_size,
         validation_data=validation_dataset,
