@@ -7,16 +7,16 @@ from model import test_size
 
 loaded_model = tf.keras.models.load_model('/home/vuk/Documents/ML/Cancer-Detection-AI/Cancer-detection-model')
 
-threshold = 0.3  
 evaluation_results = loaded_model.evaluate(test_dataset, steps=test_size // batch_size, verbose=0)
 
 true_labels = test_dataset.labels
 predicted_probabilities = loaded_model.predict(test_dataset)
-predicted_labels = (predicted_probabilities > threshold).astype(int)
+
+predicted_labels = np.argmax(predicted_probabilities, axis=1)
 
 # Calculate precision
-precision = precision_score(true_labels, predicted_labels, average='weighted')  # or 'binary' if appropriate
-recall = recall_score(true_labels, predicted_labels, average='weighted')  # or 'binary' if appropriate
+precision = precision_score(true_labels, predicted_labels, average='micro')
+recall = recall_score(true_labels, predicted_labels, average='micro')
 accuracy = evaluation_results[1]
 print(f"Accuracy: {accuracy}")
 print(f"Precision: {precision}")
@@ -42,12 +42,12 @@ while True:
 
     img, label = get_image(test_dataset, index)
 
-    img_input = np.reshape(img, (1, img.shape[0], img.shape[1], img.shape[2]))
+    img_input = np.reshape(img, (1, img.shape[1], img.shape[0], img.shape[2]))
 
     # Use the loaded model for predictions
     predictions = loaded_model.predict(img_input)
-    print(predictions)
+    predicted_class = np.argmax(predictions, axis=1)[0]
+
     plt.imshow(img, cmap=plt.cm.binary)
-    plt.title(f"Model predvidja da ova slika sadrzi: {predictions}, ova slika sadrzi: {label}")
+    plt.title(f"Model predvidja da ova slika sadrzi: {predicted_class}, ova slika sadrzi: {label}")
     plt.show()
-#44,53
