@@ -30,7 +30,7 @@ else:
         tf.keras.layers.Flatten(),
         
         tf.keras.layers.Dense(units=256, activation='relu'),
-        tf.keras.layers.Dense(units=7, activation='softmax') 
+        tf.keras.layers.Dense(units=5, activation='softmax') 
     ])
 
 
@@ -47,7 +47,7 @@ else:
         metrics=METRICS
     )
     y_train = train_dataset.labels
-    
+
 
 
     model.fit(
